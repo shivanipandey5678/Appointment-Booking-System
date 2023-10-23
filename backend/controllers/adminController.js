@@ -64,7 +64,7 @@ const addDoctor = async (req, res) => {
 
         const newDoctor = Doctor(doctorData);
         await newDoctor.save();
-        console.log(newDoctor);
+        // console.log(newDoctor);
         //returning response to frontend
         return res.status(201).json({ message: 'Doctor added successfully', doctor: newDoctor });  
 

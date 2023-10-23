@@ -13,7 +13,7 @@ import DoctorsList from './pages/Admin/DoctorsList';
 const App = () => {
 
   const {atoken}=useContext(AdminContext);
-  console.log("AAP.JSX mei AdminProvider mei h atoken",atoken)
+ 
   return atoken?(
     <div className='bg-[#F8F9FD]'>
       

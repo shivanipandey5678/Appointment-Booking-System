@@ -12,10 +12,10 @@ const AdminProvider =  ({children}) =>{
     const getAllDoctors = async() => {
         try {
             const {data}= await axios.post(backendUrl+'/api/admin/all-doctors',{},{headers:{atoken}});
-            console.log(data);
+            
             if(data.success){
                 setDoctor(data.doctors);
-                console.log("doctors",data.doctors);
+                
                 toast.success("Doctors list fetched successfully")
             }else{
                 toast.error(data.message);
@@ -28,11 +28,30 @@ const AdminProvider =  ({children}) =>{
 
     }
 
+    const changeAvailability = async (docId) =>{
+        try {
+            const {data} = await axios.post(backendUrl+'/api/admin/change-availability',{docId},{headers:{atoken}});
+            console.log("changeAvailabilityAdmin_Context",data);
+            if(data.success){
+                toast.success("maju a gyi adminContext_changeAvailability pass");
+                getAllDoctors();
+            }else{
+                toast.error("maju  nhi aayi a gyi adminContext_changeAvailability pass");
+            } 
+
+        } catch (error) {
+            toast.error("Error in changing availability")
+            console.log("Error in changing availability",error.message);
+        }
+    }
+
+
+
 
 
     const value={
         atoken,setAToken,
-        backendUrl,doctor,getAllDoctors
+        backendUrl,doctor,getAllDoctors,changeAvailability
 
     }
     return (
