@@ -15,14 +15,14 @@ import Header from './components/Header'
 const App = () => {
   return (
     <div className='mx-[5%]  md:mx-[10%]'>
-      <Home/>
+      <Navbar/>
       <Routes>
       <Route path='/' element={<Home/>}/>
       <Route path='/about' element={<About/>}/>
       <Route path='/contect' element={<Contect/>}/>
       <Route path='/login' element={<Login/>}/>
       <Route path='/my-appointment' element={<MyAppointment/>}/>
-      <Route path='/appointment' element={<Appointment/>}/>
+      <Route path='/appointment/:docId' element={<Appointment/>}/>
       <Route path='/my-profile' element={<MyProfile/>}/>
       <Route path='/doctors' element={<Doctors/>}/>
       <Route path='/doctors/:speciality' element={<Doctors/>}/>

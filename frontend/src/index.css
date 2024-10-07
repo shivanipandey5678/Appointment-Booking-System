@@ -2,6 +2,7 @@
 /* Define the custom color variable globally */
 :root {
   --primary: #4F46E5;
+  
 }
 
 /* Now define custom utility classes */
@@ -25,3 +26,4 @@
 ::-webkit-scrollbar{
   display:none
 }
+
