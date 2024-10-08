@@ -10,6 +10,7 @@ import Doctors from './pages/Doctors'
 import Appointment from './pages/Appointment'
 import Navbar from './components/Navbar'
 import Header from './components/Header'
+import Footer from './components/Footer'
 
 
 const App = () => {
@@ -29,6 +30,8 @@ const App = () => {
 
 
     </Routes>
+    <Footer/>
+    
 
     </div>
     

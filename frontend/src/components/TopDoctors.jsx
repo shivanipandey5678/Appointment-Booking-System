@@ -1,7 +1,10 @@
-import React from 'react'
-import { doctors } from '../assets/assets'
-
+import React,{useContext} from 'react'
+import { useNavigate } from 'react-router-dom'
+import { AppContext } from '../context/AppContext'
 const TopDoctors = () => {
+
+  const navigate=useNavigate()
+  const {doctors} =useContext(AppContext)
     
   return (
     <div className='flex flex-col items-center gap-4 my-16 text-grey-900 md:mx-10'>
@@ -16,7 +19,7 @@ const TopDoctors = () => {
       <div
         key={index}
         className='border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:-translate-y-2 transition-all duration-500 bg-white shadow-sm'
-       
+        onClick={()=>navigate(`/appointment/${item._id}`)}
       >
         <img
           src={item.image}
@@ -35,7 +38,7 @@ const TopDoctors = () => {
     ))}
   </div>
 
-  <button className='bg-blue-50 text-gray-600 px-12 py-3 rounded-full mt-10'>
+  <button  onClick={()=>{navigate('/doctors');scrollTo(0,0)}} className='bg-blue-50 text-gray-600 px-12 py-3 rounded-full mt-10'>
     More
   </button>
 </div>
