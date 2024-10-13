@@ -1,5 +1,5 @@
-import { createContext,useState } from "react";
-import { doctors } from "../assets/assets";
+import { createContext,useEffect,useState } from "react";
+
 import axios from 'axios';
 import {toast} from 'react-toastify';
 export const AppContext = createContext();
@@ -8,18 +8,19 @@ const AppContextProvider =  ({children}) =>{
 
 
    const [doctors,setDoctors]=useState([])
-   const [token,setToken]=useState('')
+   const [token,setToken]=useState(localStorage.getItem('token')|| "")
    const currencySymbol="$"
    const backendUrl=import.meta.env.VITE_BACKEND_URL;
-   const value={doctors,currencySymbol,token,setToken,backendUrl,setDoctors}
+   const [userData,setUserData]=useState(false);
+   
+  
 
    const getDoctorsData= async () => {
     try {
-        const {data} = await axios.post(backendUrl+'/api/doctor/list');
-        console.log("doctors data FRONTENT APPCONTEXT",data);
+        const {data} = await axios.get(backendUrl+'/api/doctor/list');
+        
         if(data.success){
             setDoctors(data.doctors);
-           
         }
     } catch (error) {
         toast.error("Error in fetching doctors data")
@@ -27,6 +28,43 @@ const AppContextProvider =  ({children}) =>{
     }
 
    }
+   const getUserProfileData = async (req, res) => {
+    try {
+      const token = localStorage.getItem("token"); // or however you're storing it
+      // console.log("token at app context", token);
+      const { data } = await axios.get(`${backendUrl}/api/user/get-profile`,{headers:{token}});
+  
+      console.log(data, "dayyyyyyyyta");
+  
+      if (data.success) {
+        setUserData(data.user);
+        console.log("user data frontend", data.user);
+      } else {
+        console.log("user data frontend_issue", data.message);
+        toast.error("User data fetch issue: " + data.message);
+      }
+    } catch (error) {
+      console.log("getUserDataIssue", error.message);
+      toast.error("Error in fetching user data");
+    }
+  };
+  
+
+   useEffect(()=>{
+
+    if(token){
+        getUserProfileData()
+    }else{
+        setUserData(false)
+    }
+    
+   },[token])
+
+   useEffect(()=>{
+    getDoctorsData()
+ },[])
+
+ const value={doctors,currencySymbol,token,setToken,backendUrl,setDoctors,userData,setUserData,getUserProfileData}
    return(
     <AppContext.Provider value={value}>
         {children}
