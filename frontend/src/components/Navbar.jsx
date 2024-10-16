@@ -8,7 +8,7 @@ const Navbar = () => {
     const [token,setToken]=useState(true);
 
   return (
-    <div className='flex items-center justify-between border-b border-b-grey-600 mb-5 text-sm py-4'>
+    <div className='flex  justify-between border-b border-b-grey-600 mb-5 text-sm py-4'>
         <img  className="cursor-pointer w-44" src={assets.logo} alt="" onClick={()=>navigate("/")}/>
         <ul className='hidden md:flex items-start font-medium gap-5 '>
             <NavLink to="/">
@@ -29,7 +29,7 @@ const Navbar = () => {
             </NavLink>
         </ul>
         
-            <div className='flex-item-center gap-4 relative'>
+            <div className='flex item-center gap-4 relative'>
             {
             token?
             <div className='flex items-center gap-2 cursor-pointer relative group'>
@@ -47,7 +47,25 @@ const Navbar = () => {
                 Create account
             </button>
             }
+
+            <img  onClick={()=>setShowMenu(true)} className="w-6 md:hidden" src={assets.menu_icon} alt="menu_icon" />
+            {/* -------------mobile menu---------------- */}
+            <div className={` ${showMenu?'fixed w-full h-full':'h-0 w-0'} md:hidden right-0 top-0 z-20 overflow-hidden bg-white transition-all duration-200`}>
+                <div className='flex justify-between p-3'>
+                    <img src={assets.logo} alt="logo" className='w-32'/>
+                    <img onClick={()=>setShowMenu(false)} src={assets.cross_icon} alt="cross_icon" className='w-9' />
+                </div>
+                <ul className='flex flex-col justify-evenly m-auto text-2xl  h-[50vh] w-[50vw] items-center font-medium text-zinc-600'>
+                    <NavLink to="/" onClick={()=>setShowMenu(false)} >Home</NavLink>
+                    <NavLink to="/doctors" onClick={()=>setShowMenu(false)} >All Doctors</NavLink>
+                    <NavLink to="/about" onClick={()=>setShowMenu(false)} >About</NavLink>
+                    <NavLink to="/contact" onClick={()=>setShowMenu(false)} >Contact</NavLink>
+                </ul>
+            </div>
+            
         </div>
+       
+
             
        
         
