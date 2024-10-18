@@ -69,29 +69,20 @@ const addDoctor = async (req, res) => {
 //api for admin login
 
 const loginAdmin = async (req,res) => {
-    try {
+    console.log('Request Body:', req.body); // Log the request body
+    const { email, password } = req.body;
 
-        const {email,password}=req.body;
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Email and password are required' });
+    }
 
-        if(email==process.env.ADMIN_EMAIL && password==process.env.ADMIN_PASSWORD){
-            //creating token for admin
-            const TOKEN = jwt.sign(email+password,process.env.JWT_SECRET);
-            res.json({message:'Login successfull',token: TOKEN})
-
-           
-        }else{
-            res.status(400).json({message:'Invalid credentials'})
-        }
-        
-    } catch (error) {
-        console.log(error);
-        res.json({message:error.message})
-        
+    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+        const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        return res.status(200).json({ success: true, token });
+    } else {
+        return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
 }
-
-
-
 
 
 export {addDoctor,loginAdmin}
