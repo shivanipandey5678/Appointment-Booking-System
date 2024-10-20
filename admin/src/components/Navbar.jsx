@@ -13,7 +13,7 @@ const Navbar = () => {
         atoken && localStorage.removeItem('atoken')
     }
   return (
-    <div className='flex justify-between items-center px-4 sm:px-10 py-3 border-b bg-white'>
+    <div className='flex justify-between items-center px-4 sm:px-10 py-6 shadow-md bg-white'>
       <div className='flex items-center gap-2 text-sm'>
          <img src={assets.admin_logo} alt="admin_logo"  className='w-36 sm:w-40 cursor-pointer' />
          <p className='border px-2.5 py-0.5 rounded-full border-gray-500 text-gray-600 '>{atoken?'Admin':'Doctor'}</p>

@@ -3,3 +3,19 @@
 :root {
     --primary-color: #5F6FFF;
   }
+
+
+/* Hide scrollbar for all elements */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* For Firefox */
+html {
+  scrollbar-width: none; /* Hides scrollbar in Firefox */
+}
+
+/* For Internet Explorer 10+ */
+body {
+  -ms-overflow-style: none; /* Hides scrollbar in IE */
+}
