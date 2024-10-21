@@ -46,9 +46,9 @@ const AddDoctor = () => {
             })
 
             const {data}=await axios.post(backendUrl+'/api/admin/add-doctor',formData,{headers:{atoken}});
-            console.log(atoken);
+            // console.log(atoken);
              if(data.success){
-                toast.success("Doctor added successfully")
+                
                 setDocImg(false);
                 setDocName("");
                 setDocEmail(""); 
@@ -61,6 +61,7 @@ const AddDoctor = () => {
                 setDocAddress2("");
                 setDocAbout("");
                 setDocDegree("");
+                toast.success("Doctor added successfully")
                        
              }else{
                 toast.error(data.message)

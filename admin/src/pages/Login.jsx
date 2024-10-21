@@ -18,8 +18,8 @@ const Login = () => {
               const { data } = await axios.post(
                   backendUrl + '/api/admin/login',
                   {
-                      email, // Include email in the request body
-                      password, // Include password in the request body
+                      email, 
+                      password, 
                   },
                   {
                       headers: {
