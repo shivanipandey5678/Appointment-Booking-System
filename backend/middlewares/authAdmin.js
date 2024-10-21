@@ -7,17 +7,18 @@ const authAdmin = async (req,res,next) => {
 
         const {atoken} = req.headers;
         if(!atoken){
-            res.json({success:false,message:'Nor Authorized'})
+            return res.json({success:false,message:'Nor atoken'})
         }
         const token_decode = JWT.verify(atoken,process.env.JWT_SECRET);
-        if(token_decode!=process.env.ADMIN_EMAIL+process.env.ADMIN_PASSWORD){
-                res.json({success:false,message:'Not Authorized'})
+        // console.log("Decoded Token:", token_decode)
+        if(token_decode.data!=process.env.ADMIN_EMAIL+process.env.ADMIN_PASSWORD){
+                return res.json({success:false,message:'Not Authenticated'})  
         }
         next();
 
     } catch (error) {
-        console.log(error);
-        res.json({message:error.message,success:false})
+        console.log("catch issue meessage:",error.message);
+        return res.json({message:"Not Authenticated",success:false})
     }
 }
 

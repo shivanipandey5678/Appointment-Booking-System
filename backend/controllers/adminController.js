@@ -12,7 +12,18 @@ const addDoctor = async (req, res) => {
         //checking all data for add-doctor
         if(!name || !email || !fees || !password || !speciality || !experience || !imageFile ||!about ||!degree) {
             return res.status(400).json({ message: 'Please fill all the fields' });
-        }   
+        }  
+        
+          // Check if file exists
+          if (imageFile === undefined) {
+            return res.status(400).json({ success: false, message: 'Image is required' });
+        }
+
+        const existingDoctor = await Doctor.findOne({ email });
+        if (existingDoctor) {
+            return res.status(400).json({ message: 'Doctor with this email already exists' });
+        }
+        
 
         //validating email format
         if(!validator.isEmail(email)){
@@ -55,14 +66,14 @@ const addDoctor = async (req, res) => {
         await newDoctor.save();
         console.log(newDoctor);
         //returning response to frontend
-        res.status(201).json({ message: 'Doctor added successfully', doctor: newDoctor });  
+        return res.status(201).json({ message: 'Doctor added successfully', doctor: newDoctor });  
 
 
        
     } catch (error) {
         console.log(error);
         //returning error response to frontend
-        res.status(500).json({ message: 'Error in adding doctor', error: error.message || 'An unknown error occurred' });
+        return res.status(500).json({ message: 'Error in adding doctor', error: error.message || 'An unknown error occurred' });
     }
 }
 
@@ -77,7 +88,7 @@ const loginAdmin = async (req,res) => {
     }
 
     if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-        const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({  data: process.env.ADMIN_EMAIL + process.env.ADMIN_PASSWORD }, process.env.JWT_SECRET, { expiresIn: '30d' });
         return res.status(200).json({ success: true, token });
     } else {
         return res.status(401).json({ success: false, message: 'Invalid credentials' });
