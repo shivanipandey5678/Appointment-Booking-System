@@ -2,6 +2,8 @@ import validator from 'validator';
 import bcrypt from 'bcrypt';
 import {v2 as cloudinary} from 'cloudinary'
 import Doctor from '../modals/doctorModel.js';
+import userModel from '../modals/userModel.js';
+import appointmentModel from '../modals/appointmentModel.js';
 import jwt from 'jsonwebtoken';
 //API for adding doctor
 const addDoctor = async (req, res) => {
@@ -107,5 +109,79 @@ const allDoctors = async (req,res) => {
      }
 }
 
-export {addDoctor,loginAdmin,allDoctors}
+//api for all appointment list
+
+const appointmentsAdmin = async(req,res) => {
+    try {
+        
+        const appointmentList=await appointmentModel.find({});
+        if(!appointmentList){
+            res.json({success:false,message:"issue in appointmentLis fetching"})
+        }
+        res.json({success:true,appointmentList})
+       
+        
+
+    } catch (error) {
+        console.log("adminController_error_appointment list");
+        res.json({success:false,message:req.message})
+    }
+
+}
+
+//api for appointment cancellation 
+
+const appointmentCancel = async (req,res) => {
+        try {
+           
+            const {appointmentId} = req.body;
+            
+            const appointmentData= await appointmentModel.findById(appointmentId)
+            if(!appointmentData){
+                return res.json({success:false,message:'Appointment not found'})
+            }
+
+            await appointmentModel.findByIdAndUpdate(appointmentId,{cancelled:true},{new:true});
+
+            //releasing doctor slot 
+
+            const {docId,slotDate,slotTime}= appointmentData;
+            const docData= await Doctor.findById(docId);
+            let slots_booked = docData.slot_booked;
+            slots_booked[slotDate]= slots_booked[slotDate].filter((slot)=> slot!== slotTime);
+            await Doctor.findByIdAndUpdate(docId,{slot_booked:slots_booked});
+            res.json({success:true,message:'Appointment cancelled successfully'})
+
+            } catch (error) {
+            console.log("cancelAppointmentIssue", error.message);
+            return res.json({ success: false, message: error.message })
+            
+        }
+    }
+
+    //API to get dashboard data for admin panel
+
+    const adminDashboard = async (req,res) => {
+        try {
+            const doctors= await Doctor.find({});
+            const users = await userModel.find({});
+            const appointments = await appointmentModel.find({});
+
+            const dashData={
+                doctorsNumber:doctors.length,
+                appointmentsNumber:appointments.length,
+                usersNumber:users.length,
+                latestAppointment:appointments.reverse().slice(0,5)
+
+            }
+            res.json({success:true,dashData})
+        } catch (error) {
+            console.log("adminDashboard at admincontroller",error.message)
+            
+        }
+    }
+
+
+
+export {addDoctor,loginAdmin,allDoctors,appointmentsAdmin,appointmentCancel,adminDashboard}
 

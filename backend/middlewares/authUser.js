@@ -6,13 +6,14 @@ const authUser = async (req,res,next) => {
     try {
 
         const {token} = req.headers;
-        console.log("token from header in UthUser:",token);
+        console.log("USER TOKEN AT AUTH_USER:",token);
         if(!token){
-            return res.json({success:false,message:'Nor auth_User_atoken'})
+            return res.json({success:false,message:'NOT found token at auth_user'})
         }
         const token_decode = JWT.verify(token,process.env.JWT_SECRET);
        
         req.user= token_decode.id;
+        console.log("user id at authUser in req user ",req.user);
       
         next();
 

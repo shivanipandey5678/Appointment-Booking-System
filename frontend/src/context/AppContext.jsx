@@ -34,7 +34,7 @@ const AppContextProvider =  ({children}) =>{
       // console.log("token at app context", token);
       const { data } = await axios.get(`${backendUrl}/api/user/get-profile`,{headers:{token}});
   
-      console.log(data, "dayyyyyyyyta");
+      console.log(data, "user at app context who is inteacting ");
   
       if (data.success) {
         setUserData(data.user);
@@ -64,7 +64,7 @@ const AppContextProvider =  ({children}) =>{
     getDoctorsData()
  },[])
 
- const value={doctors,currencySymbol,token,setToken,backendUrl,setDoctors,userData,setUserData,getUserProfileData}
+ const value={doctors,currencySymbol,token,setToken,backendUrl,setDoctors,userData,setUserData,getUserProfileData,getDoctorsData}
    return(
     <AppContext.Provider value={value}>
         {children}

@@ -8,6 +8,8 @@ const AdminProvider =  ({children}) =>{
     const [atoken,setAToken] = useState(localStorage.getItem('atoken')?localStorage.getItem('atoken'):"");
     const backendUrl=import.meta.env.VITE_BACKEND_URL;
     const [doctor,setDoctor]=useState([]);
+    const [appointments,setAppointments]=useState([]);
+    const [dashData,setDashData]=useState(false);
 
     const getAllDoctors = async() => {
         try {
@@ -46,12 +48,65 @@ const AdminProvider =  ({children}) =>{
     }
 
 
+    const getAllAppointments = async (req,res) => {
+        try {
+            const {data} = await axios.get(backendUrl+'/api/admin/appointments',{headers:{atoken}});
+            if(data.success){
+                setAppointments(data.appointmentList)
+                console.log(data.appointmentList)
+                toast.success(data.message)
+
+
+            }else{
+                toast.error("appointmentList empty in admincontext")
+            }
+        } catch (error) {
+            toast.error("Error in getAllAppointments admincontext")
+            console.log("Error in changing availability",error.message);
+        }
+    }
+
+     const cancelAppointment = async (appointmentId) => {
+        try {
+          const {data} = await axios.post(backendUrl+'/api/admin/cancel-appointment',{appointmentId},{headers:{atoken}})
+          if(data.success){
+            toast.success(data.message)
+            getAllAppointments()
+          }else{
+            toast.error("cancelAppointment at admin context")
+            console.log(data)
+          }
+        } catch (error) {
+          toast.error("cancelAppointment at admin context catch")
+          console.log("cancelAppointment at admin context catch",error.message);
+        }
+      }
+
+      const getDashData = async (req,res) => {
+         try {
+            const {data} = await axios.get(backendUrl+'/api/admin/dashboard',{headers:{atoken}})
+            if(data.success){
+                setDashData(data.dashData)
+                console.log("dashdata",data.dashData)
+            }else{
+                toast.error("issue in getdashdata at asmincontext")
+                console.log(data.message)
+            }
+         } catch (error) {
+            toast.error(error.message)
+            
+         }
+      }
+
+
 
 
 
     const value={
         atoken,setAToken,
         backendUrl,doctor,getAllDoctors,changeAvailability
+        ,getAllAppointments,appointments,setAppointments
+        ,cancelAppointment,getDashData,dashData
 
     }
     return (
