@@ -10,7 +10,7 @@ const changeAvailability= async (req,res) =>{
         // console.log("docId",docId)
         console.log("docDataControleer:",docData);
         await Doctor.findOneAndUpdate({_id:docId},{available:!docData.available},{ new: true });
-        res.json({success:true,message:'Doctor availabiljity changed successfully in doc Controller'})
+        res.json({ success: true, message: 'Doctor availability status updated successfully.' });
         
         
     } catch (error) {
@@ -25,10 +25,10 @@ const changeAvailability= async (req,res) =>{
 const doctorList = async (req,res) => {
     try {
         const doctors=await Doctor.find({}).select(['-password','-email']);
-        res.json({success:true,doctors})
+        res.json({ success: true, message: 'All doctors retrieved successfully.', doctors });
     } catch (error) {
-        res.json({success:false,message:error.message})
-        console.log("Error in fetching doctors list docController",error.message);
+        console.log("Error in fetching doctors list docController", error.message);
+        res.json({ success: false, message: 'Unable to fetch doctor list. Please try again.' });
     }
 }
 
@@ -39,23 +39,23 @@ const loginDoctor = async (req,res) => {
         const doctor = await Doctor.findOne({email});
         if(!doctor){
             console.log("dont get doc login doct at doc controller")
-            res.json({success:false,message:error.message})
+            return res.json({ success: false, message: 'Login failed. Invalid credentials or user does not exist.' });
         }
 
         const isMatch = await bcrypt.compare(password,doctor.password)
 
         if(isMatch){
             const token=jwt.sign({id:doctor._id},process.env.JWT_SECRET)
-            res.json({success:true,token})
+            res.json({ success: true, message: 'Doctor logged in successfully.', token });
         }else{
-            res.json({success:false,message:"invalid credentials"})
+            res.json({ success: false, message: 'Login failed. Invalid credentials or user does not exist.' });
         }
 
 
         
     } catch (error) {
-        console.log("login doct at coc controller")
-        res.json({success:false,message:error.message})
+        console.log("loginDoctor at doc controller", error);
+        res.json({ success: false, message: 'Login failed. Please try again later.' });
     }
 }
 
@@ -67,12 +67,12 @@ const appointmentsDoctor = async (req,res) => {
         const docId = req.docId;
         console.log("docid is ",docId)
         const appointment=await appointmentModel.find({docId});
-        res.json({success:true,appointment})
+        res.json({ success: true, message: 'Appointments retrieved successfully.', appointment });
 
         
     } catch (error) {
-        console.log(" appointmentsDoctor at doc controller")
-        res.json({success:false,message:error.message})
+        console.log("appointmentsDoctor at doc controller", error);
+        res.json({ success: false, message: 'Unable to retrieve appointments at the moment.' });
     }
 }
 
@@ -84,14 +84,13 @@ const appointmentComplete = async (req,res) => {
         const {appointmentId}=req.body;
 
         const appointmentData=await appointmentModel.findById(appointmentId);
-        console.log("appointmentData.docId===docId",appointmentData.docId===docId)
-        console.log("appointmentData",appointmentData)
+        
         if(appointmentData && appointmentData.docId===docId){
             await appointmentModel.findByIdAndUpdate(appointmentId,{isCompleted:true})
        
-            return res.json({success:true,message:"Appointment Completed"})
+            return res.json({ success: true, message: "Appointment marked as completed successfully." });
         }else{
-            return res.json({success:false,message:"Marked failed"})
+            return res.json({ success: false, message: "Unable to mark appointment as complete. Please try again." });
         }
 
         
@@ -112,15 +111,15 @@ const appointmentCancel = async (req,res) => {
         const appointmentData=await appointmentModel.findById(appointmentId);
         if(appointmentData && appointmentData.docId===docId){
             await appointmentModel.findByIdAndUpdate(appointmentId,{cancelled:true})
-            return res.json({success:true,message:"Appointment Cancelled"})
+            return res.json({ success: true, message: "Appointment has been successfully cancelled." });
         }else{
-            return res.json({success:false,message:"Cancellation failed"})
+            return res.json({ success: false, message: "Failed to cancel the appointment. Please try again later." });
         }
 
         
     } catch (error) {
-        console.log(" appointmentcancel at doc controller catch")
-        res.json({success:false,message:error.message})
+        console.log("appointmentCancel at doc controller", error);
+        res.json({ success: false, message: error.message });
     }
 }
 
@@ -150,14 +149,13 @@ const doctorDashboard = async (req,res)=>{
             patients:patients.length,
             latestAppointments:appointments.reverse().slice(0,5)
         }
-        console.log("ar doc controller dash data ",dashData)
-        return res.json({success:true,dashData})
+        res.json({ success: true, message: 'Doctor dashboard data retrieved successfully.', dashData });
 
         
 
     } catch (error) {
         console.log(" doctorDashboard at doc controller catch")
-        return res.json({success:false,message:error.message})
+        res.json({ success: false, message: 'Could not load dashboard data. Please refresh or try again later.' });
     }
 }
 
@@ -170,12 +168,12 @@ const doctorProfile = async (req,res) => {
         const docId = req.docId;
         const profileData=await Doctor.findById(docId).select('-password')
 
-        res.json({success:true,profileData})
+        res.json({ success: true, message: 'Doctor profile retrieved successfully.', profileData });
 
         
     } catch (error) {
-        console.log(" doctorProfile at doc controller catch")
-        return res.json({success:false,message:error.message})
+        console.log("doctorProfile at doc controller catch", error);
+        res.json({ success: false, message: 'Failed to fetch doctor profile. Please check your connection or try again.' });
     }
 }
 
@@ -187,10 +185,10 @@ const updateDoctorProfile = async (req,res) => {
         const {fees,address,available}=req.body
         const serchedDoc=await Doctor.findById(docId)
         const updated=await Doctor.findByIdAndUpdate(docId,{fees,address,available})
-        res.json({success:true,message:" Profile updated",serchedDoc,updated})
+        res.json({ success: true, message: "Doctor profile updated successfully.", searchedDoc, updated });
     } catch (error) {
         console.log(" updateDoctorProfile at doc controller catch")
-        return res.json({success:false,message:error.message})
+        res.json({ success: false, message: 'Could not update profile. Please try again.' });
     }
 }
 

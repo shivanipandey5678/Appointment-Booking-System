@@ -15,7 +15,7 @@ const Login = () => {
   const onSubmitHandler = async(event) =>{
      event.preventDefault()
      try {
-       if(state=="signup"){
+       if(state==="signup"){
         const {data}=await axios.post(backendUrl+"/api/user/register",{name,email,password});
         console.log("data",data)
         console.log("data2",data.success)
@@ -26,7 +26,8 @@ const Login = () => {
           toast.success("Account created successfully")
          
         }else{
-          toast.error("d");
+          toast.error("Account creation failed. Please try again.");
+
         }
        }else{
         const {data}=await axios.post(backendUrl+"/api/user/login",{email,password});
@@ -39,13 +40,15 @@ const Login = () => {
          
         
         }else{
-          toast.error("login",data.message);
+          toast.error("Login failed: " + data.message);
+
         }
          
 
        }
      } catch (error) {
-         toast.error('Error in creating account')
+         toast.error(`Error during ${state === "signup" ? "sign up" : "login"}. Please try again.`);
+
          console.log("Error in creating account",error.message);
      }
 
@@ -61,7 +64,8 @@ const Login = () => {
     <form onSubmit={onSubmitHandler} className='min-h-80vh flex items-center'>
         <div className="flex flex-col mt-10 gap-3 m-auto items-start p-8 min-w-[340px] sm:min-w-96 border rounded-2xl text-zinc-600 text-sm shadow-lg bg-white">
         <p className='text-2xl font-bold '>{state==="signup"?"Create Account":"Login"}</p>
-        <p>Please {state==="signup"?"sign up ":" log in"} to book appointment</p>
+        <p>Please {state === "signup" ? "sign up" : "log in"} to book an appointment</p>
+
         {
           state==="signup" && 
           <div className='w-full'>
@@ -78,7 +82,7 @@ const Login = () => {
           <p>Password</p>
           <input type="password" className='border border-zinc-300 rounded w-full p-2 mt-1' onChange={(e)=>setPassword(e.target.value)} value={password} required/>
         </div>
-        <button typr="submit" className='bg-primary rounded w-full py-2 text-white'>{state==="signup"?"Sign Up" : "Login"}</button>
+        <button type="submit" className='bg-primary rounded w-full py-2 text-white'>{state==="signup"?"Sign Up" : "Login"}</button>
         {
           state==="signup"
           ?<p>Already have an account ? <span onClick={()=>setState('login')} className='text-primary underline cursor-pointer'>Login here</span></p>

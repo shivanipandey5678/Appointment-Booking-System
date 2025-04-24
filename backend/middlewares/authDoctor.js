@@ -8,7 +8,10 @@ const authDoctor = async (req,res,next) => {
         const {dtoken} = req.headers;
         // console.log(" dtoken AT doctor:",dtoken);
         if(!dtoken){
-            return res.json({success:false,message:'NOT found dtoken at authdoctor'})
+            return res.status(401).json({
+                success: false,
+                message: 'Authorization failed: Doctor token is missing.',
+              });
         }
         const dtoken_decode = JWT.verify(dtoken,process.env.JWT_SECRET);
        
@@ -18,8 +21,11 @@ const authDoctor = async (req,res,next) => {
         next();
 
     } catch (error) {
-        console.log("catch issue meessage:",error.message);
-        return res.json({message:"Not Authenticated",success:false})
+        console.error('Doctor authentication error:', error.message);
+        return res.status(401).json({
+          success: false,
+          message: 'Authentication failed: Invalid or expired doctor token.',
+        });
     }
 }
 

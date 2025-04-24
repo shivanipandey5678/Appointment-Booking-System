@@ -24,18 +24,21 @@ const MyProfile = () => {
 
           const {data}=await axios.post(backendUrl+'/api/user/update-profile',formData,{headers:{token}})
           if(data.success){
-            toast.success("User data updated successfully")
+            toast.success("Profile updated successfully!")
+
             await getUserProfileData()
             setIsEdit(false)
             setImage(false)
 
           }else{
-            toast.error("User data update issue: " +data.message)
+            toast.error(data.message || "Could not update profile. Please try again.")
+
             console.log("user data update issue",data.message);
           }
       } catch (error) {
         console.log("updateUserProfileDataIssue", error.message);
-        toast.error("Error in updating user data")
+        toast.error("An unexpected error occurred while updating your profile.")
+
 
       }
 

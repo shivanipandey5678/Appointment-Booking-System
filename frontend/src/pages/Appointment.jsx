@@ -72,7 +72,8 @@ const Appointment = () => {
    
     console.log("token at app context appointment", token);
     if(!token){
-      toast.warn('login to book appointment')
+      toast.warn('Please log in to book an appointment.');
+
       return navigate("/login")
 
      }
@@ -87,7 +88,8 @@ const Appointment = () => {
         const {data}=await axios.post(backendUrl+'/api/user/book-appointment',{slotDate,slotTime,docId},{headers:{token}})
         console.log(data, "book appointment data");
         if(data.success){
-          toast.success("Appointment booked successfully")
+          toast.success("Your appointment has been successfully booked.");
+
           getDoctorsData()
           navigate("/my-appointment")
     } else{
@@ -95,7 +97,8 @@ const Appointment = () => {
     }
   }catch (error) {
       console.log("book appointment issue", error.message);
-      toast.error("Error in booking appointment");
+      toast.error("Failed to book the appointment. Please try again.");
+
     }
       
   }

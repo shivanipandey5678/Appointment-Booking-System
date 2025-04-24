@@ -22,10 +22,10 @@ const DoctorProvider = ({ children }) => {
                 console.log("getAppointments data", data.appointment)
             } else {
                 console.log(data)
-                toast.error("isshuu")
+                toast.error("Failed to fetch appointments.");
             }
         } catch (error) {
-            toast.error("getAppointments at doc context catch")
+            toast.error("Error fetching appointments.");
             console.log("getAppointments at doc context catch", error.message)
         }
     }
@@ -36,14 +36,14 @@ const DoctorProvider = ({ children }) => {
             const { data } = await axios.post(backendUrl + '/api/doctor/complete-appointment', { appointmentId }, { headers: { dtoken } });
             console.log(data,"data at cancelappointment at doc contxt")
             if (data.success) {
-                toast.success(data.message)
+                toast.success("Appointment marked as completed.");
                 getAppointments()
 
             } else {
-                toast.error("completeAppointment else at doctor context")
+                toast.error("Failed to complete appointment.");
             }
         } catch (error) {
-            toast.error("completeAppointment at doc context catch")
+            toast.error("Error completing appointment.")
             console.log("completeAppointment at doc context catch", error.message)
         }
     }
@@ -56,14 +56,14 @@ const DoctorProvider = ({ children }) => {
             const { data } = await axios.post(backendUrl + '/api/doctor/cancel-appointment', { appointmentId }, { headers: { dtoken } });
             console.log(data,"data at cancelappointment at doc contxt")
             if (data.success) {
-                toast.success(data.message)
+                toast.success("Appointment cancelled successfully.");
                 getAppointments()
 
             } else {
-                toast.error("cancelAppointment else at doctor context")
+                toast.error("Failed to cancel appointment.");
             }
         } catch (error) {
-            toast.error("cancelAppointment at doc context catch")
+            toast.error("Error cancelling appointment.");
             console.log("cancelAppointment at doc context catch", error.message)
         }
     }
@@ -74,14 +74,14 @@ const DoctorProvider = ({ children }) => {
             const data = await axios.get(backendUrl+'/api/doctor/dashboard',{headers:{dtoken}});
             console.log("data",data.data.success)
             if(data.data.success){
-                toast.success("got the dashdata ")
+                
                 setDashData(data.data.dashData)
                 console.log("dashdata",data.data.dashData)
             }else{
-                toast.error("else in dashDashData doc context")
+                toast.error("Failed to fetch dashboard data.");
             }
         } catch (error) {
-            toast.error("dashDashData at doc context catch")
+            toast.error("Error fetching dashboard data.");
             console.log("dashDashData at doc context catch", error.message)
         }
     }
@@ -92,12 +92,12 @@ const DoctorProvider = ({ children }) => {
             const {data} = await axios.get(backendUrl+'/api/doctor/profile',{headers:{dtoken}})
             if(data.success){
                 setProfileData(data.profileData)
-                console.log("data.profileData",data.profileData)
+                console.log("Profile data:", data.profileData);
             }else{
-                toast.error("getProfileData else")
+                toast.error("Failed to fetch profile data.");
             }
         } catch (error) {
-            toast.error("getProfileData at doc context catch")
+            toast.error("Error fetching profile data.");
             console.log("getProfileData at doc context catch", error.message)
         }
     }

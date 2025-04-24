@@ -13,29 +13,28 @@ const addDoctor = async (req, res) => {
 
         //checking all data for add-doctor
         if(!name || !email || !fees || !password || !speciality || !experience || !imageFile ||!about ||!degree) {
-            return res.status(400).json({ message: 'Please fill all the fields' });
+            return res.status(400).json({ message: 'All fields are required. Please ensure that name, email, fees, password, speciality, experience, image, about, and degree are provided.' });
         }  
         
           // Check if file exists
           if (imageFile === undefined) {
-            return res.status(400).json({ success: false, message: 'Image is required' });
+            return res.status(400).json({ message: 'Doctor image is required. Please upload a profile picture.' });
         }
 
         const existingDoctor = await Doctor.findOne({ email });
         if (existingDoctor) {
-            return res.status(400).json({ message: 'Doctor with this email already exists' });
+            return res.status(400).json({ message: 'A doctor with this email already exists. Please use a different email.' });
         }
         
 
         //validating email format
         if(!validator.isEmail(email)){
-            return res.status(400).json({message:'Invalid email format'})
-
+            return res.status(400).json({ message: 'Invalid email format. Please enter a valid email address.' });
         }
 
         //validating password 
         if(password.length<8){
-            return res.status(400).json({message:'please enter a password of minimum 8 characters'})
+            return res.status(400).json({ message: 'Password must be at least 8 characters long. Please provide a stronger password.' });
 
         }
 
@@ -66,16 +65,15 @@ const addDoctor = async (req, res) => {
 
         const newDoctor = Doctor(doctorData);
         await newDoctor.save();
-        // console.log(newDoctor);
-        //returning response to frontend
-        return res.status(201).json({ message: 'Doctor added successfully', doctor: newDoctor });  
+  
+        return res.status(201).json({ message: 'Doctor profile created successfully', doctor: newDoctor });
 
 
        
     } catch (error) {
         console.log(error);
         //returning error response to frontend
-        return res.status(500).json({ message: 'Error in adding doctor', error: error.message || 'An unknown error occurred' });
+        return res.status(500).json({ message: 'An error occurred while adding the doctor. Please try again later.', error: error.message || 'Unknown error' });
     }
 }
 
@@ -86,14 +84,14 @@ const loginAdmin = async (req,res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return res.status(400).json({ message: 'Email and password are required' });
+        return res.status(400).json({ message: 'Email and password are required to log in. Please provide both.' });
     }
 
     if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
         const token = jwt.sign({  data: process.env.ADMIN_EMAIL + process.env.ADMIN_PASSWORD }, process.env.JWT_SECRET, { expiresIn: '30d' });
-        return res.status(200).json({ success: true, token });
+        return res.status(200).json({ message: 'Login successful', success: true, token });
     } else {
-        return res.status(401).json({ success: false, message: 'Invalid credentials' });
+        return res.status(401).json({ message: 'Invalid credentials. Please check your email and password and try again.' });
     }
 }
 
@@ -102,10 +100,10 @@ const loginAdmin = async (req,res) => {
 const allDoctors = async (req,res) => {
      try {
         const doctors = await Doctor.find({}).select('-password');
-        res.json({success:true, doctors});
+        res.status(200).json({ success: true, message: 'Doctor list retrieved successfully', doctors });
      } catch (error) {
-        console.log("adminController_error",error.message);
-        res.json({success:false,message:error.message});
+        console.error('Error fetching doctors:', error.message);
+        res.status(500).json({ success: false, message: 'Unable to retrieve doctors at the moment. Please try again later.' });
      }
 }
 
@@ -138,7 +136,7 @@ const appointmentCancel = async (req,res) => {
             
             const appointmentData= await appointmentModel.findById(appointmentId)
             if(!appointmentData){
-                return res.json({success:false,message:'Appointment not found'})
+                return res.status(404).json({ success: false, message: 'Appointment not found. Please check the appointment ID and try again.' });
             }
 
             await appointmentModel.findByIdAndUpdate(appointmentId,{cancelled:true},{new:true});
@@ -150,11 +148,11 @@ const appointmentCancel = async (req,res) => {
             let slots_booked = docData.slot_booked;
             slots_booked[slotDate]= slots_booked[slotDate].filter((slot)=> slot!== slotTime);
             await Doctor.findByIdAndUpdate(docId,{slot_booked:slots_booked});
-            res.json({success:true,message:'Appointment cancelled successfully'})
+            res.status(200).json({ success: true, message: 'Appointment cancelled successfully and doctor slot released.' });
 
             } catch (error) {
-            console.log("cancelAppointmentIssue", error.message);
-            return res.json({ success: false, message: error.message })
+                console.error('Error cancelling appointment:', error.message);
+                res.status(500).json({ success: false, message: 'An error occurred while canceling the appointment. Please try again later.' });
             
         }
     }
@@ -174,9 +172,10 @@ const appointmentCancel = async (req,res) => {
                 latestAppointment:appointments.reverse().slice(0,5)
 
             }
-            res.json({success:true,dashData})
+            res.status(200).json({ success: true, message: 'Dashboard data retrieved successfully', dashData });
         } catch (error) {
-            console.log("adminDashboard at admincontroller",error.message)
+            console.error('Error fetching dashboard data:', error.message);
+            res.status(500).json({ success: false, message: 'Unable to fetch dashboard data. Please try again later.' });
             
         }
     }

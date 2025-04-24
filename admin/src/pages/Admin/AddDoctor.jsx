@@ -24,7 +24,7 @@ const AddDoctor = () => {
         e.preventDefault();
         try {
             if(!docImg){
-                return toast.error("Please upload doctor image")
+                return toast.error("Doctor image is required. Please upload a valid photo.")
             }
 
             const formData = new FormData();
@@ -61,16 +61,16 @@ const AddDoctor = () => {
                 setDocAddress2("");
                 setDocAbout("");
                 setDocDegree("");
-                toast.success("Doctor added successfully")
+                toast.success("Doctor has been added successfully.");
                        
              }else{
-                toast.error(data.message)
+                toast.error(data.message || "Failed to add doctor. Please try again.");
              }
             
 
            
         } catch (error) {
-            toast.error("err_catch",error.message)
+            toast.error("Something went wrong while adding the doctor.");
             console.log("catch issue meessage:",error.message);
         }
 

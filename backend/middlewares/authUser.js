@@ -8,7 +8,10 @@ const authUser = async (req,res,next) => {
         const {token} = req.headers;
         // console.log("USER TOKEN AT AUTH_USER:",token);
         if(!token){
-            return res.json({success:false,message:'NOT found token at auth_user'})
+            return res.status(401).json({
+                success: false,
+                message: 'Authorization failed: User token is missing.',
+              });
         }
         const token_decode = JWT.verify(token,process.env.JWT_SECRET);
        
@@ -18,8 +21,11 @@ const authUser = async (req,res,next) => {
         next();
 
     } catch (error) {
-        console.log("catch issue meessage:",error.message);
-        return res.json({message:"Not Authenticated",success:false})
+        console.error('User authentication error:', error.message);
+        return res.status(401).json({
+          success: false,
+          message: 'Authentication failed: Invalid or expired user token.',
+        });
     }
 }
 

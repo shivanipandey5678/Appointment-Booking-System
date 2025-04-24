@@ -15,14 +15,15 @@ const MyAppointment = () => {
         const {data} = await axios.get(backendUrl+'/api/user/appointments',{headers:{token}})
         if(data.success){
           setAppointments(data.appointments.reverse())
-          toast.success(data.message)
-          console.log("getUserAppointments data",data)
+          toast.success("Appointments fetched successfully.");
+          console.log("✅ Appointments fetched:", data.appointments);
         }else{
-          console.log("getUserAppointments else")
+          toast.error("Failed to fetch appointments.");
+          console.warn("⚠️ Appointments fetch failed:", data);
         }
      } catch (error) {
-        console.log("getUserAppointments error",error)
-        toast.error("Something went wrong in getUserAppointments")
+        console.error("❌ Error fetching appointments:", error);
+        toast.error("Could not load appointments. Please try again.");
      }
   }
 
@@ -31,17 +32,17 @@ const MyAppointment = () => {
         
       const {data} =await axios.post(backendUrl+'/api/user/cancel-appointment',{appointmentId},{headers:{token}})
       if(data.success){
-        toast.success(data.message)
-        console.log("cancelAppointment data",data)
+        toast.success("Appointment cancelled successfully.");
+        console.log("✅ Appointment cancelled:", appointmentId);
         getUserAppointments()
         getDoctorsData()
       }else{
-        toast.error(data.message)
-        console.log("cancelAppointment else")
+        toast.error(data.message || "Failed to cancel the appointment.");
+        console.warn("⚠️ Cancel failed:", data);
       }
     } catch (error) {
-      console.log("cancelAppointment error",error)
-      toast.error("Something went wrong in cancelAppointment")
+      console.error("❌ Error cancelling appointment:", error);
+      toast.error("Unable to cancel appointment. Please try again.");
       
     }
   }

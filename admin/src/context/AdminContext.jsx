@@ -18,13 +18,13 @@ const AdminProvider =  ({children}) =>{
             if(data.success){
                 setDoctor(data.doctors);
                 
-                toast.success("Doctors list fetched successfully")
+                toast.success("Doctors list fetched successfully.");
             }else{
-                toast.error(data.message);
+                toast.error(data.message || "Failed to fetch doctors list.");
             }
         } catch (error) {
-            toast.error("Error in fetching doctors list")
-            console.log("Error in fetching doctors list",error.message);
+            toast.error("Error fetching doctors list.");
+            console.error("getAllDoctors Error:", error.message);
         }
        
 
@@ -35,15 +35,15 @@ const AdminProvider =  ({children}) =>{
             const {data} = await axios.post(backendUrl+'/api/admin/change-availability',{docId},{headers:{atoken}});
             console.log("changeAvailabilityAdmin_Context",data);
             if(data.success){
-                toast.success("maju a gyi adminContext_changeAvailability pass");
+                toast.success("Doctor availability updated successfully.");
                 getAllDoctors();
             }else{
-                toast.error("maju  nhi aayi a gyi adminContext_changeAvailability pass");
+                toast.error(data.message || "Failed to update doctor availability.");
             } 
 
         } catch (error) {
-            toast.error("Error in changing availability")
-            console.log("Error in changing availability",error.message);
+            toast.error("Error updating doctor availability.");
+            console.error("changeAvailability Error:", error.message);
         }
     }
 
@@ -54,15 +54,15 @@ const AdminProvider =  ({children}) =>{
             if(data.success){
                 setAppointments(data.appointmentList)
                 console.log(data.appointmentList)
-                toast.success(data.message)
+                toast.success("Appointments retrieved successfully.");
 
 
             }else{
-                toast.error("appointmentList empty in admincontext")
+                toast.error(data.message || "No appointments found.");
             }
         } catch (error) {
-            toast.error("Error in getAllAppointments admincontext")
-            console.log("Error in changing availability",error.message);
+            toast.error("Error retrieving appointments.");
+            console.error("getAllAppointments Error:", error.message);
         }
     }
 
@@ -70,15 +70,15 @@ const AdminProvider =  ({children}) =>{
         try {
           const {data} = await axios.post(backendUrl+'/api/admin/cancel-appointment',{appointmentId},{headers:{atoken}})
           if(data.success){
-            toast.success(data.message)
+            toast.success("Appointment cancelled successfully.");
             getAllAppointments()
           }else{
-            toast.error("cancelAppointment at admin context")
+            toast.error(data.message || "Failed to cancel appointment.");
             console.log(data)
           }
         } catch (error) {
-          toast.error("cancelAppointment at admin context catch")
-          console.log("cancelAppointment at admin context catch",error.message);
+            toast.error("Error cancelling appointment.");
+            console.error("cancelAppointment Error:", error.message);
         }
       }
 
@@ -87,14 +87,15 @@ const AdminProvider =  ({children}) =>{
             const {data} = await axios.get(backendUrl+'/api/admin/dashboard',{headers:{atoken}})
             if(data.success){
                 setDashData(data.dashData)
+                toast.success("Dashboard data loaded.");
                 console.log("dashdata",data.dashData)
             }else{
-                toast.error("issue in getdashdata at asmincontext")
+                toast.error(data.message || "Failed to load dashboard data.");
                 console.log(data.message)
             }
          } catch (error) {
-            toast.error(error.message)
-            
+            toast.error("Error fetching dashboard data.");
+            console.error("getDashData Error:", error.message);
          }
       }
 

@@ -7,18 +7,24 @@ const authAdmin = async (req,res,next) => {
 
         const {atoken} = req.headers;
         if(!atoken){
-            return res.json({success:false,message:'Nor atoken'})
+            return res.json({success:false,message:'Access denied: Admin token is missing.'})
         }
         const token_decode = JWT.verify(atoken,process.env.JWT_SECRET);
         // console.log("Decoded Token:", token_decode)
         if(token_decode.data!=process.env.ADMIN_EMAIL+process.env.ADMIN_PASSWORD){
-                return res.json({success:false,message:'Not Authenticated'})  
+            return res.status(403).json({
+                success: false,
+                message: 'Unauthorized access: Invalid admin credentials.',
+              });
         }
         next();
 
     } catch (error) {
-        console.log("catch issue meessage:",error.message);
-        return res.json({message:"Not Authenticated",success:false})
+        console.error('Admin auth error:', error.message);
+        return res.status(401).json({
+          success: false,
+          message: 'Authentication failed: Invalid or expired admin token.',
+        });
     }
 }
 
