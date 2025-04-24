@@ -4,10 +4,12 @@ import { useContext } from 'react'
 import axios from 'axios';
 import { AdminContext } from '../context/AdminContext.jsx';
 import { toast } from 'react-toastify';
+import { DoctorContext } from '../context/DoctorContext.jsx';
 
 const Login = () => {
     const [state,setState]=useState('Admin')
     const {setAToken,backendUrl}=useContext(AdminContext);
+    const {setDToken,dtoken}=useContext(DoctorContext);
     const [email,setEmail]=useState('');
     const [password,setPassword]=useState('')
 
@@ -36,7 +38,17 @@ const Login = () => {
                   console.error('Login failed:', data.message);
               }
           } else {
-              toast.error(data.message)
+              const {data} = await axios.post(backendUrl+'/api/doctor/login',{email,password})
+              if(data.success){
+                localStorage.setItem('dtoken',data.token)
+                setDToken(data.token)
+                console.log("dtoken setting in login jsx",data.token)
+              }else{
+                toast.error("at login else block in login.js ")
+
+              }
+              
+
           }
       } catch (error) {
           console.error('Error during login:', error.response?.data || error.message);

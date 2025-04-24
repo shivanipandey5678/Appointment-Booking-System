@@ -2,16 +2,27 @@ import React, { useContext } from 'react'
 import { assets } from '../assets/assets.js'
 import { AdminContext } from '../context/AdminContext';
 import { useNavigate } from 'react-router-dom';
+import { DoctorContext } from '../context/DoctorContext.jsx';
 
 
 const Navbar = () => {
     const {atoken,setAToken}=useContext(AdminContext);
+    const {dtoken,setDToken}=useContext(DoctorContext)
     const navigate=useNavigate();
-    const logout= () => {
-        navigate('/')
-        atoken && setAToken('')
-        atoken && localStorage.removeItem('atoken')
-    }
+    const logout = () => {
+      navigate('/');
+      
+      if (atoken) {
+          setAToken('');
+          localStorage.removeItem('atoken');
+      }
+  
+      if (dtoken) {
+          setDToken('');
+          localStorage.removeItem('dtoken');
+      }
+  };
+  
   return (
     <div className='flex justify-between items-center px-4 sm:px-10 py-6 shadow-md bg-white'>
       <div className='flex items-center gap-2 text-sm'>
